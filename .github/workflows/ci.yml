@@ -4,6 +4,8 @@ on:
     pull_request:
         branches: [main, dev]
 
+env:
+  MIRROR_URL: git@github.com:EpitechPromo2027/B-CNA-500-BDX-5-1-cryptography-anthony.ardhuin.git
 
 jobs:
     coding-style:
@@ -38,7 +40,6 @@ jobs:
 
             - name: Build project
               run: make
-
 
             - name: Check binaries
               run: |
