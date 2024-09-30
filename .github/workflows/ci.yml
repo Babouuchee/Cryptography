@@ -44,9 +44,9 @@ jobs:
             - name: Check binaries
               run: |
                 if [ -f ./my_pgp ]; then
-                    echo "::notice::Server binary OK"
+                    echo "::notice::PGP binary OK"
                 else
-                    echo "::error file=./my_pgp::Server binary does not exist"
+                    echo "::error file=./my_pgp::PGP binary does not exist"
                     exit 1
                 fi
 
