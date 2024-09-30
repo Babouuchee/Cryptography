@@ -16,7 +16,7 @@ int main(int argc, char const *const *argv)
 
     if (argc == 2 && (strcmp(argv[1], "-h") == 0
         || strcmp(argv[1], "--help") == 0))
-            print_usage();
-    config = get_config(argv);
+            return print_usage();
+    config = get_config(argc, argv);
     return handle_config(config);
 }

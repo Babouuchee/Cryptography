@@ -15,18 +15,20 @@ typedef enum crypto_system_e {
     AES,
     RSA,
     PGP_XOR,
-    PGP_AES
+    PGP_AES,
+    NO_SYSTEM
 } crypto_system_t;
 
-typedef enum crypyo_mode_e {
+typedef enum crypto_mode_e {
     CIPHER,
     DECIPHER,
-    GENERATE_RSA
-} crypyo_mode_t;
+    GENERATE_RSA,
+    NO_MODE
+} crypto_mode_t;
 
 typedef struct config_s {
     crypto_system_t system;
-    crypyo_mode_t mode;
+    crypto_mode_t mode;
     bool b_option_used;
     char *key;
     int prime_P;

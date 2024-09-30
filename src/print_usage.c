@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
+#include "macros.h"
+
 static void print_crypto_system(void)
 {
     printf("\tCRYPTO_SYSTEM\n");
@@ -33,7 +35,7 @@ static void print_mode_options_and_key(void)
     printf("(incompatible with -g MODE)\n");
 }
 
-void print_usage(void)
+int print_usage(void)
 {
     printf("USAGE\n");
     printf("./my_pgp CRYPTO_SYSTEM MODE [OPTIONS] [key]\n\n");
@@ -41,4 +43,5 @@ void print_usage(void)
     printf("The MESSAGE is read from standard input\n\n");
     print_crypto_system();
     print_mode_options_and_key();
+    return SUCCESS;
 }

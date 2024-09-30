@@ -10,8 +10,8 @@
 
     #include "structs.h"
 
-void print_usage(void);
-config_t *get_config(char const *const *argv);
+int print_usage(void);
+config_t *get_config(int ac, char const *const *av);
 int handle_config(config_t *config);
 
 #endif /* !INCLUDE_H_ */
