@@ -1,0 +1,67 @@
+on:
+    push:
+        branches: [main, dev]
+    pull_request:
+        branches: [main, dev]
+
+
+jobs:
+    coding-style:
+        runs-on: ubuntu-latest
+        container:
+            image: ghcr.io/epitech/coding-style-checker:latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Check coding style
+              run: check.sh $(pwd)/server $(pwd)
+
+            - name: Check result
+              run: |
+                CONTENT=$(cat coding-style-reports.log)
+                if [ -z "$CONTENT" ]; then
+                    echo "::notice::Coding style OK"
+                else
+                    echo "$CONTENT" | awk -F':' '{sub(/^ /, "", $3); print "::error file="$1",line="$2",title="$3" coding style error::"$4}'
+                    exit 1
+                fi
+
+    build:
+        runs-on: ubuntu-latest
+        container:
+            image: epitechcontent/epitest-docker:latest
+        needs: coding-style
+        steps:
+
+            - uses: actions/checkout@v4
+
+            - name: Build project
+              run: make
+
+
+            - name: Check binaries
+              run: |
+                if [ -f ./my_pgp ]; then
+                    echo "::notice::Server binary OK"
+                else
+                    echo "::error file=./my_pgp::Server binary does not exist"
+                    exit 1
+                fi
+
+    mirror:
+        name: Push to mirror
+        runs-on: ubuntu-latest
+        needs: build
+
+        steps:
+            - name: Checkout source
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            - name: Mirror repository
+              uses: pixta-dev/repository-mirroring-action@v1
+              with:
+                target_repo_url: ${{ env.MIRROR_URL }}
+                ssh_private_key: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
