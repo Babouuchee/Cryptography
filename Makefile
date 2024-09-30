@@ -7,7 +7,7 @@
 
 NAME		=	my_pgp
 
-SRC			=	main.c							\
+SRC			=	main.c
 
 OBJ			=	$(addprefix src/, $(SRC:.c=.o))
 
