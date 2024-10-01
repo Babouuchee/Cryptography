@@ -12,6 +12,7 @@ SRC_MAIN	=	main.c
 SRC			=	get_config.c	\
 				handle_config.c	\
 				print_usage.c	\
+				algorithms/generate_aes.c
 
 OBJ_MAIN	=	$(addprefix src/, $(SRC_MAIN:.c=.o))
 

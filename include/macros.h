@@ -12,4 +12,8 @@
     #define FAILURE 1
     #define ERROR 84
 
+    #define AES_KEYLEN 16
+    #define AES_KEYEXP_SIZE 176
+    #define AES_BLOCKLEN 16
+
 #endif /* !MACROS_H_ */
