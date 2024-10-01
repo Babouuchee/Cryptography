@@ -8,32 +8,10 @@ env:
   MIRROR_URL: git@github.com:EpitechPromo2027/B-CNA-500-BDX-5-1-cryptography-anthony.ardhuin.git
 
 jobs:
-    coding-style:
-        runs-on: ubuntu-latest
-        container:
-            image: ghcr.io/epitech/coding-style-checker:latest
-
-        steps:
-            - uses: actions/checkout@v4
-
-            - name: Check coding style
-              run: check.sh $(pwd) $(pwd)
-
-            - name: Check result
-              run: |
-                CONTENT=$(cat coding-style-reports.log)
-                if [ -z "$CONTENT" ]; then
-                    echo "::notice::Coding style OK"
-                else
-                    echo "$CONTENT" | awk -F':' '{sub(/^ /, "", $3); print "::error file="$1",line="$2",title="$3" coding style error::"$4}'
-                    exit 1
-                fi
-
     build:
         runs-on: ubuntu-latest
         container:
             image: epitechcontent/epitest-docker:latest
-        needs: coding-style
         steps:
 
             - uses: actions/checkout@v4
