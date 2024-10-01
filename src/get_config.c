@@ -71,10 +71,17 @@ static bool get_b_option(int ac, char const *const *av, config_t *config)
 
 static char *get_key(int ac, char const *const *av, config_t *config)
 {
-    if (config->mode != GENERATE_RSA && ac > 4)
-        return strdup(av[4]);
-    if (config->mode == GENERATE_RSA && ac > 7)
-        return strdup(av[7]);
+    if (config->b_option_used == true) {
+        if (config->mode == GENERATE_RSA && ac > 4)
+            return strdup(av[4]);
+        if (config->mode != GENERATE_RSA && ac > 7)
+            return strdup(av[7]);
+    } else {
+        if (config->mode == GENERATE_RSA && ac > 3)
+            return strdup(av[3]);
+        if (config->mode != GENERATE_RSA && ac > 6)
+            return strdup(av[6]);
+    }
     return NULL;
 }
 
@@ -84,6 +91,10 @@ config_t *get_config(int ac, char const *const *av)
 
     if (!result)
         return NULL;
+    if (ac < 3 || ac > 7) {
+        free(result);
+        return NULL;
+    }
     result->system = get_crypto_system(ac, av);
     result->mode = get_crypto_mode(ac, av, result);
     result->b_option_used = get_b_option(ac, av, result);
