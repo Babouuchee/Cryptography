@@ -14,35 +14,48 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include "macros.h"
 
-uint8_t sbox[256] = {
-    // Table S-box d'AES
-    // (à compléter avec les valeurs correctes)
+uint8_t sbox[256];
+
+void generate_sbox() {
+    uint8_t p = 1, q = 1;
+
+    while (p != 1) {
+        p = p ^ (p << 1) ^ (p & 0x80 ? 0x1B : 0);
+
+        q ^= (q << 1);
+        q ^= (q << 2);
+        q ^= (q << 4);
+        q ^= 0x63;
+
+        sbox[p] = q;
+    }
+
+    sbox[0] = 0x63;
+}
+
+const uint8_t rcon[10] = {
+    0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36
 };
 
-void key_expansion(uint8_t* RoundKey, const uint8_t* Key)
-{
+void key_expansion(uint8_t* RoundKey, const uint8_t* Key) {
     int i, j;
     uint8_t temp[4];
 
-    // Les 16 premiers octets du RoundKey sont la clé initiale
+    generate_sbox();
     for (i = 0; i < AES_KEYLEN; i++) {
         RoundKey[i] = Key[i];
     }
 
-    // Générer les sous-clés restantes
     for (i = AES_KEYLEN; i < AES_KEYEXP_SIZE; i += 4) {
-        // Stocker les 4 derniers octets de RoundKey dans temp
         for (j = 0; j < 4; j++) {
             temp[j] = RoundKey[(i - 4) + j];
         }
 
-        // Appliquer la transformation à temp tous les 16 octets (1 tour complet)
         if (i % AES_KEYLEN == 0) {
             // Rotation (RotWord)
             uint8_t k = temp[0];
@@ -57,8 +70,8 @@ void key_expansion(uint8_t* RoundKey, const uint8_t* Key)
             temp[2] = sbox[temp[2]];
             temp[3] = sbox[temp[3]];
 
-            // XOR avec une constante rcon
-            temp[0] ^= (1 << ((i / AES_KEYLEN) - 1));  // Simplifié pour l'exemple
+            // XOR avec une constante rcon (seulement sur le premier octet)
+            temp[0] ^= rcon[(i / AES_KEYLEN) - 1];
         }
 
         // XOR avec les 4 octets 16 positions avant dans RoundKey
@@ -76,25 +89,6 @@ void print_state(const uint8_t* state)
     printf("\n");
 }
 
-// Fonction de chiffrement (à implémenter)
-void encrypt_block(const uint8_t* block, uint8_t* encrypted_block)
-{
-    (void) block;
-    (void) encrypted_block;
-    // Fonction à compléter avec ton algorithme AES
-    // Exemple : AES_Encrypt(block, encrypted_block);
-    // Ici tu dois appliquer les transformations AES à chaque bloc
-    // encrypted_block = AES_Encrypt(block);
-}
-
-void print_uint8(const uint8_t* message, int message_length)
-{
-    for (int i = 0; i < message_length; i++) {
-        printf("%02x ", message[i]);
-    }
-    printf("\n");
-}
-
 uint8_t* add_padding(const uint8_t* message, int length, int* padded_length)
 {
     int padding = AES_BLOCKLEN - (length % AES_BLOCKLEN);
@@ -106,7 +100,7 @@ uint8_t* add_padding(const uint8_t* message, int length, int* padded_length)
         padded_message[i] = padding;
     }
 
-    printf("Padded message: %s\n", padded_message);
+    printf("Original message with padding: %s\n", padded_message);
 
     return padded_message;
 }
@@ -126,7 +120,7 @@ uint8_t* read_message(int* length)
         buffer[*length - 1] = '\0';
         (*length)--;
     }
-
+    printf("Original message : %s\n", buffer);
     uint8_t* message = malloc(sizeof(uint8_t) * *length);
     memcpy(message, buffer, *length);
 
@@ -137,33 +131,31 @@ uint8_t* read_message(int* length)
 int generate_aes(char *client_key)
 {
     int message_length, padded_length;
-
     uint8_t key[AES_BLOCKLEN];
+    uint8_t round_key[AES_KEYEXP_SIZE];
+
     for (int i = 0; i < AES_BLOCKLEN; i++) {
         sscanf(&client_key[2*i], "%2hhx", &key[i]);
     }
+    printf("Key : ");
+    print_state(key);
 
     uint8_t* message = read_message(&message_length);
     printf("Message: ");
-    print_uint8(message, message_length);
+    print_state(message);
 
     uint8_t* padded_message = add_padding(message, message_length, &padded_length);
     printf("Padded message: ");
-    print_uint8(padded_message, padded_length);
+    print_state(padded_message);
 
-
-    // Chiffrement bloc par bloc
-    //for (int i = 0; i < padded_length; i += AES_BLOCKLEN) {
-    //    uint8_t encrypted_block[AES_BLOCKLEN];
-    //    EncryptBlock(&padded_message[i], encrypted_block);
-//
-    //    // Afficher le bloc chiffré (facultatif)
-    //    printf("Bloc chiffré %d : ", i / AES_BLOCKLEN);
-    //    for (int j = 0; j < AES_BLOCKLEN; j++) {
-    //        printf("%02x ", encrypted_block[j]);
-    //    }
-    //    printf("\n");
-    //}
+    key_expansion(round_key, key);
+    printf("Clé étendue :\n");
+    for (int i = 0; i < AES_KEYEXP_SIZE; i++) {
+        printf("%02x ", round_key[i]);
+        if ((i + 1) % 16 == 0) {
+            printf("\n");
+        }
+    }
 
     free(message);
     free(padded_message);
