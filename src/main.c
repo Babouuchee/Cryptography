@@ -13,7 +13,7 @@
 int main(int argc, char const *const *argv)
 {
     config_t *config = NULL;
-    generate_aes("2b7e151628aed2a6abf7158809cf4f3c");
+    generate_aes("2b7e151628aed2a6");
     return 0;
 
     if (argc == 2 && (strcmp(argv[1], "-h") == 0
