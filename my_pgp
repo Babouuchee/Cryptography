@@ -1,0 +1,21 @@
+#!/usr/bin/env python3
+
+import os
+from sys import argv, path
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.join(script_dir, 'src')
+path.append(src_dir)
+
+from help import printHelp
+from my_pgp import My_PGP
+
+def main():
+    if "-h" in argv or "--help" in argv:
+        printHelp()
+    else:
+        my_pgp = My_PGP()
+        my_pgp.run()
+
+if __name__ == "__main__":
+    main()
