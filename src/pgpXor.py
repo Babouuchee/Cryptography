@@ -31,7 +31,18 @@ class PGP_XOR():
                 print("Key is missing")
                 exit(84)
             self._key = argv[3]
+        if self.isHex(self._key) is False:
+            print("Key must be in hexadecimal")
+            exit(84)
+        self._key = hex(self._key)
         self._message = input("Enter message: ")
+
+    def isHex(input):
+        hexValues = "0123456789abcdef"
+        for letter in input:
+            if letter not in hexValues:
+                return False
+        return True
 
     def run(self):
         print(f"PGP-XOR  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")

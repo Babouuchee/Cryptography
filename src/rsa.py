@@ -27,13 +27,29 @@ class RSA():
             if len(argv) > 5:
                 print("Key is not supposed to be with -g")
                 exit(84)
-            self._primeP = int(argv[3])
-            self._primeQ = int(argv[4])
+            self._primeP = argv[3]
+            self._primeQ = argv[4]
+            if self.isHex(self._primeQ) is False or self.isHex(self._primeP) is False:
+                print("Prime numbers must be in hexadecimal")
+                exit(84)
+            self._primeQ = hex(self._primeQ)
+            self._primeP = hex(self._primeP)
         else:
             if len(argv) < 4:
                 print("Key is missing")
             self._key = argv[3]
+            if self.isHex(self._key) is False:
+                print("Key must be in hexadecimal")
+                exit(84)
+            self._key = hex(self._key)
         self._message = input("Enter message: ")
+
+    def isHex(input):
+        hexValues = "0123456789abcdef"
+        for letter in input:
+            if letter not in hexValues:
+                return False
+        return True
 
     def run(self):
         print(f"RSA  mode: '{self._mode}'  primes: '{self._primeQ},{self._primeP}'  key: '{self._key}'  message: '{self._message}'" if self._mode == "-g" else f"RSA  mode: '{self._mode}'  key: '{self._key}'  message: '{self._message}'")
