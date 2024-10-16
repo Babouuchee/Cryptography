@@ -44,6 +44,45 @@ class AES():
 
     def cipher(self):
         print("Cipher")
+        sbox = self.generate_sbox()
+        print("Generated S-Box (Hexadecimal):")
+
+        for i in range(0, 256, 16):
+            print(" ".join(f"{x:02x}\n" for x in sbox[i:i+16]))
+
+        message = self.get_message()
+
 
     def decipher(self):
         print("Decipher")
+
+    def get_message(self):
+        message = input("Enter the message to encrypt: ")
+        print(f"Message: {message}")
+        return message.encode()
+
+def generate_sbox(self):
+    sbox = [0] * 256
+    inverse = [0] * 256
+
+    # Générer l'inverse multiplicatif sur le corps de Galois
+    for i in range(256):
+        if i == 0:
+            inverse[i] = 0
+        else:
+            inverse[i] = self.galois_inverse(i)
+
+    # Appliquer la transformation affine pour créer la S-Box
+    for i in range(256):
+        x = inverse[i]
+        sbox[i] = (x ^ (x << 1) ^ (x << 2) ^ (x << 3) ^ (x << 4)) & 0xFF
+        sbox[i] ^= 0x63
+
+    return sbox
+
+def galois_inverse(self, a):
+    # Trouver l'inverse multiplicatif de a dans GF(2^8)
+    b = 1
+    for i in range(1, 8):
+        b = (b * a) % 0x11b
+    return b
