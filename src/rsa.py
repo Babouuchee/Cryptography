@@ -5,8 +5,8 @@ from sys import argv
 class RSA():
     def __init__(self):
         self._mode = ""
-        self._primeP = -1
-        self._primeQ = -1
+        self._primeP = ""
+        self._primeQ = ""
         self._key = ""
         self._message = ""
 
@@ -27,24 +27,24 @@ class RSA():
             if len(argv) > 5:
                 print("Key is not supposed to be with -g")
                 exit(84)
-            self._primeP = argv[3]
-            self._primeQ = argv[4]
-            if self.isHex(self._primeQ) is False or self.isHex(self._primeP) is False:
+            primeP = argv[3]
+            primeQ = argv[4]
+            if self.isHex(primeQ) is False or self.isHex(primeP) is False or len(primeP) % 2 != 0 or len(primeQ) % 2 != 0:
                 print("Prime numbers must be in hexadecimal")
                 exit(84)
-            self._primeQ = hex(self._primeQ)
-            self._primeP = hex(self._primeP)
+            self._primeQ = bytes.fromhex(primeP)
+            self._primeP = bytes.fromhex(primeQ)
         else:
             if len(argv) < 4:
                 print("Key is missing")
-            self._key = argv[3]
-            if self.isHex(self._key) is False:
+            key = argv[3]
+            if self.isHex(self._key) is False or len(key) % 2 != 0:
                 print("Key must be in hexadecimal")
                 exit(84)
-            self._key = hex(self._key)
+            self._key = bytes.fromhex(key)
         self._message = input("Enter message: ")
 
-    def isHex(input):
+    def isHex(self, input):
         hexValues = "0123456789abcdef"
         for letter in input:
             if letter not in hexValues:

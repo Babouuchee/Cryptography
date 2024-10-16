@@ -25,19 +25,19 @@ class PGP_AES():
             if len(argv) < 5:
                 print("Key is missing")
                 exit(84)
-            self._key = argv[4]
+            key = argv[4]
         else:
             if len(argv) < 4:
                 print("Key is missing")
                 exit(84)
-            self._key = argv[3]
-        if self.isHex(self._key) is False:
+            key = argv[3]
+        if self.isHex(self._key) is False or len(key) % 2 != 0:
             print("Key must be in hexadecimal")
             exit(84)
-        self._key = hex(self._key)
+        self._key = bytes.fromhex(key)
         self._message = input("Enter message: ")
 
-    def isHex(input):
+    def isHex(self, input):
         hexValues = "0123456789abcdef"
         for letter in input:
             if letter not in hexValues:
