@@ -2,6 +2,8 @@
 
 from sys import argv
 
+import math
+
 class RSA():
     def __init__(self):
         self._mode = ""
@@ -42,7 +44,7 @@ class RSA():
                 print("Key must be in hexadecimal")
                 exit(84)
             self._key = bytes.fromhex(key)
-        self._message = input("Enter message: ")
+            self._message = input("Enter message: ")
 
     def isHex(self, input):
         hexValues = "0123456789abcdef"
@@ -70,4 +72,40 @@ class RSA():
         print("Decipher")
 
     def generate(self):
-        print("Decipher")
+        print("Generate")
+        p = int.from_bytes(self._primeP)
+        q = int.from_bytes(self._primeQ)
+        n = p * q
+        lambdaN = self.leastCommonMultiple(p - 1, q - 1)
+        e = 65537
+        if self.greatestCommonMultiple(e, lambdaN) != 1:
+            raise Exception("e and lambda are not coprime")
+        d = self.mod_inverse(e, lambdaN)
+
+        public_key = f"{hex(e)}-{hex(n)}"
+        private_key = f"{hex(d)}-{hex(n)}"
+
+        print(f"Public key : {public_key}")
+        print(f"Private key : {private_key}")
+
+    def leastCommonMultiple(self, a, b):
+        return abs(a * b) // self.greatestCommonMultiple(a, b)
+
+    def greatestCommonMultiple(self, a, b):
+        while b != 0:
+            a, b = b, a % b
+        return a
+
+    def mod_inverse(self, e, phi):
+        gcd_val, x, y = self.extended_gcd(e, phi)
+        if gcd_val != 1:
+            raise Exception("Modular inverse does not exist")
+        return x % phi
+
+    def extended_gcd(self, a, b):
+        if a == 0:
+            return b, 0, 1
+        gcd_val, x1, y1 = self.extended_gcd(b % a, a)
+        x = y1 - (b // a) * x1
+        y = x1
+        return gcd_val, x, y
