@@ -1,3 +1,2 @@
-*.o
-my_pgp
 .vscode
+__pycache__
