@@ -33,7 +33,7 @@ class XOR():
             self._key = argv[3]
 
     def run(self):
-        print(f"XOR  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")
+        # print(f"XOR  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")
         if self._mode == "-c":
             self.cipher()
         elif self._mode == "-d":
@@ -43,7 +43,13 @@ class XOR():
             exit(84)
 
     def cipher(self):
-        print("Cipher")
+        key_bytes = bytes.fromhex(self._key)
+        reversed_message = self._message[::-1]
+        xor = bytes([a ^ key_bytes[i % len(key_bytes)] for i, a in enumerate(reversed_message.encode())])
+        little_endian = "".join([f"{x:02x}" for x in xor])
+        print(little_endian)
 
     def decipher(self):
-        print("Decipher")
+        key_bytes = bytes.fromhex(self._key)
+        xor_bytes = bytes([a ^ key_bytes[i % len(key_bytes)] for i, a in enumerate(bytes.fromhex(self._message))])
+        print(xor_bytes.decode()[::-1])
