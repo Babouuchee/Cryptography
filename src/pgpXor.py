@@ -7,7 +7,7 @@ class PGP_XOR():
         self._mode = ""
         self._bOptionEnable = False
         self._key = ""
-        self._message = input("Enter message: ")
+        self._message = ""
 
         if len(argv) < 3:
             print("Missing arguments")
@@ -31,6 +31,7 @@ class PGP_XOR():
                 print("Key is missing")
                 exit(84)
             self._key = argv[3]
+        self._message = input("Enter message: ")
 
     def run(self):
         print(f"PGP-XOR  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")
