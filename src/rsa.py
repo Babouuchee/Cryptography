@@ -9,8 +9,9 @@ class RSA():
         self._mode = ""
         self._primeP = ""
         self._primeQ = ""
-        self._key = ""
         self._message = ""
+        self._keyFirstPart = ""
+        self._keySecondPart = ""
 
         if len(argv) < 3:
             print("Missing arguments")
@@ -31,27 +32,28 @@ class RSA():
                 exit(84)
             primeP = argv[3]
             primeQ = argv[4]
-            if self.isHex(primeQ) is False or self.isHex(primeP) is False or len(primeP) % 2 != 0 or len(primeQ) % 2 != 0:
+            if isHex(primeQ) is False or isHex(primeP) is False or len(primeP) % 2 != 0 or len(primeQ) % 2 != 0:
                 print("Prime numbers must be in hexadecimal")
                 exit(84)
-            self._primeP = int(''.join([primeP[i:i + 2] for i in range(0, len(primeP), 2)][::-1]), 16)
-            self._primeQ = int(''.join([primeQ[i:i + 2] for i in range(0, len(primeQ), 2)][::-1]), 16)
+            self._primeP = int.from_bytes(bytes.fromhex(primeP), 'little')
+            self._primeQ = int.from_bytes(bytes.fromhex(primeQ), 'little')
+            # if isPrime(self._primeP) is False or isPrime(self._primeQ) is False:
+            #     print("Prime numbers given aren't prime")
+            #     exit(84)
         else:
             if len(argv) < 4:
                 print("Key is missing")
-            key = argv[3]
-            if self.isHex(self._key) is False or len(key) % 2 != 0:
+            keyParts = argv[3].split('-')
+            if len(keyParts) != 2:
+                print("The key is invalid")
+                exit(84)
+            keyFirstPart, keySecondPart = keyParts
+            if isHex(keyFirstPart) is False or len(keyFirstPart) % 2 != 0 or isHex(keySecondPart) is False or len(keySecondPart) % 2 != 0:
                 print("Key must be in hexadecimal")
                 exit(84)
-            self._key = bytes.fromhex(key)
-            self._message = input("Enter message: ")
-
-    def isHex(self, input):
-        hexValues = "0123456789abcdef"
-        for letter in input:
-            if letter not in hexValues:
-                return False
-        return True
+            self._keyFirstPart = int.from_bytes(bytes.fromhex(keyFirstPart), 'little')
+            self._keySecondPart = int.from_bytes(bytes.fromhex(keySecondPart), 'little')
+            self._message = input("")
 
     def run(self):
         if self._mode == "-c":
@@ -65,10 +67,22 @@ class RSA():
             exit(84)
 
     def cipher(self):
-        print("Cipher")
+        e = self._keyFirstPart
+        n = self._keySecondPart
+        message_bytes = self._message.encode()
+        message_int = int.from_bytes(message_bytes, 'little')
+        encryptedMessage = pow(message_int, e, n)
+        encryptedBytes = encryptedMessage.to_bytes((encryptedMessage.bit_length() + 7) // 8, 'little')
+        print(f"{encryptedBytes.hex()}")
 
     def decipher(self):
-        print("Decipher")
+        d = self._keyFirstPart
+        n = self._keySecondPart
+        encryptedBytes = bytes.fromhex(self._message)
+        encryptedInt = int.from_bytes(encryptedBytes, 'little')
+        decryptedInt = pow(encryptedInt, d, n)
+        decryptedBytes = decryptedInt.to_bytes((decryptedInt.bit_length() + 7) // 8, 'little')
+        print(f"{decryptedBytes.decode()}")
 
     def generate(self):
         p = self._primeP
@@ -93,3 +107,16 @@ def findBiggestFermatPrime(maxValue):
         if math.gcd(fermat, maxValue):
             result = fermat
         iteration += 1
+
+def isHex(input):
+    hexValues = "0123456789abcdef"
+    for letter in input:
+        if letter not in hexValues:
+            return False
+    return True
+
+def isPrime(value):
+    for i in range(2, int(value ** 0.5) + 1):
+        if value % i == 0:
+            return False
+    return True
