@@ -8,7 +8,7 @@ class RSA():
         self._primeP = -1
         self._primeQ = -1
         self._key = ""
-        self._message = input("Enter message: ")
+        self._message = ""
 
         if len(argv) < 3:
             print("Missing arguments")
@@ -33,6 +33,7 @@ class RSA():
             if len(argv) < 4:
                 print("Key is missing")
             self._key = argv[3]
+        self._message = input("Enter message: ")
 
     def run(self):
         print(f"RSA  mode: '{self._mode}'  primes: '{self._primeQ},{self._primeP}'  key: '{self._key}'  message: '{self._message}'" if self._mode == "-g" else f"RSA  mode: '{self._mode}'  key: '{self._key}'  message: '{self._message}'")
