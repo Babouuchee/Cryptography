@@ -1,0 +1,158 @@
+Cipher
+Key :  67616d65206f66207468726f6e65730a
+Message :  The Iron Throne.
+Round Keys:
+Round 0: 656d616720666f206f7268740a73656e
+Round 1: fa0aee2bda6c810bb51ee97fbf6d8c11
+Round 2: 7802d24da26e53461770ba39a81d3628
+Round 3: 4cc0764ceeae250af9de9f3351c3a91b
+Round 4: e31158970dbf7d9df461e2aea5a24bb5
+Round 5: 361762343ba81fa9cfc9fd076a6bb6b2
+Round 6: 01151d5a3abd02f3f574fff49f1f4946
+Round 7: 5bcedd216173dfd2940720260b186960
+Round 8: 8be57058ea96af8a7e918fac7589e6cc
+Round 9: c078d7cd2aee7847547ff7eb21f61127
+Round 10: 0c859579266bed3e72141ad553e20bf2
+Message :  b'The Iron Throne.\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10'
+Initial State: ['0x20656854', '0x6e6f7249', '0x72685420', '0x2e656e6f', '0x10101010', '0x10101010', '0x10101010', '0x10101010']
+After AddRoundKey (Round 0): ['0x45080933', '0x4e091d69', '0x1d1a3c54', '0x24160b01']
+After SubBytes (Round 1): ['0xc301306e', '0xf9a4012f', '0x20eba2a4', '0x7c2b4736']
+Original state in bytes:
+Row 0: c301306e
+Row 1: f9a4012f
+Row 2: 20eba2a4
+Row 3: 7c2b4736
+Shifted state (after shifts):
+Shifted Row 0: c3a4a236
+Shifted Row 1: f9eb476e
+Shifted Row 2: 202b302f
+Shifted Row 3: 7c0101a4
+After ShiftRows (Round 1): ['0xc3a4a236', '0xf9eb476e', '0x202b302f', '0x7c0101a4']
+After MixColumns (Round 1): ['0xfe5b6334', '0xe7932f60', '0x22091a25', '0x5ed989d7']
+After AddRoundKey (Round 1): ['0x4518d1f', '0x3dffae6b', '0x9717f35a', '0xe1b405c6']
+After SubBytes (Round 2): ['0xc05dd1f2', '0x7fe41627', '0xbe0df088', '0xb46b8df8']
+Original state in bytes:
+Row 0: c05dd1f2
+Row 1: 7fe41627
+Row 2: be0df088
+Row 3: b46b8df8
+Shifted state (after shifts):
+Shifted Row 0: c0e4f0f8
+Shifted Row 1: 7f0d8df2
+Shifted Row 2: be6bd127
+Shifted Row 3: b45d1688
+After ShiftRows (Round 2): ['0xc0e4f0f8', '0x7f0d8df2', '0xbe6bd127', '0xb45d1688']
+After MixColumns (Round 2): ['0xa4e0cca4', '0x971b7ffe', '0x12d27052d', '0x10abd4687']
+After AddRoundKey (Round 2): ['0xdce21ee9', '0x35752cb8', '0x13a57bf14', '0x1a2a070af']
+After SubBytes (Round 3): ['0x1e729886', '0x6c719d96', '0xfa085b80', '0x7951e03a']
+Original state in bytes:
+Row 0: 1e729886
+Row 1: 6c719d96
+Row 2: fa085b80
+Row 3: 7951e03a
+Shifted state (after shifts):
+Shifted Row 0: 1e715b3a
+Shifted Row 1: 6c08e086
+Shifted Row 2: fa519896
+Shifted Row 3: 79729d80
+After ShiftRows (Round 3): ['0x1e715b3a', '0x6c08e086', '0xfa519896', '0x79729d80']
+After MixColumns (Round 3): ['0xce2b977c', '0xa7c12f4b', '0x1137d21eb', '0x79a1b17f']
+After AddRoundKey (Round 3): ['0x82ebe130', '0x496f0a41', '0x1eaa3bed8', '0x28621864']
+After SubBytes (Round 4): ['0x4f8e913', '0x8367a83b', '0x61ae0a87', '0x43adaa34']
+Original state in bytes:
+Row 0: 04f8e913
+Row 1: 8367a83b
+Row 2: 61ae0a87
+Row 3: 43adaa34
+Shifted state (after shifts):
+Shifted Row 0: 04670a34
+Shifted Row 1: 83aeaa13
+Shifted Row 2: 61ade93b
+Shifted Row 3: 43f8a887
+After ShiftRows (Round 4): ['0x4670a34', '0x83aeaa13', '0x61ade93b', '0x43f8a887']
+After MixColumns (Round 4): ['0x9fe02b09', '0x4d3357bc', '0x1fc3b4891', '0x1bacc6380']
+After AddRoundKey (Round 4): ['0x7cf1739e', '0x408c2a21', '0x1085aaa3f', '0x11f6e2835']
+After SubBytes (Round 5): ['0xb8fa110', '0xfde56409', '0x75acbe30', '0x96349fc0']
+Original state in bytes:
+Row 0: 0b8fa110
+Row 1: fde56409
+Row 2: 75acbe30
+Row 3: 96349fc0
+Shifted state (after shifts):
+Shifted Row 0: 0be5bec0
+Shifted Row 1: fdac9f10
+Shifted Row 2: 7534a109
+Shifted Row 3: 968f6430
+After ShiftRows (Round 5): ['0xbe5bec0', '0xfdac9f10', '0x7534a109', '0x968f6430']
+After MixColumns (Round 5): ['0x15cc3d3dd', '0x8115450f', '0x1fed0318', '0xe90f812a']
+After AddRoundKey (Round 5): ['0x16ad4b1e9', '0xbabd5aa6', '0xd024fe1f', '0x83643798']
+After SubBytes (Round 6): ['0x1ec84802', '0x24be7af4', '0xc0bb3670', '0x469a43ec']
+Original state in bytes:
+Row 0: 1ec84802
+Row 1: 24be7af4
+Row 2: c0bb3670
+Row 3: 469a43ec
+Shifted state (after shifts):
+Shifted Row 0: 1ebe36ec
+Shifted Row 1: 24bb4302
+Shifted Row 2: c09a48f4
+Shifted Row 3: 46c87a70
+After ShiftRows (Round 6): ['0x1ebe36ec', '0x24bb4302', '0xc09a48f4', '0x46c87a70']
+After MixColumns (Round 6): ['0x13fcfe369', '0x1df8e1f90', '0x93c3cd7a', '0x1c533ea98']
+After AddRoundKey (Round 6): ['0x13edafe33', '0x1e5331d63', '0x66b7328e', '0x15a2ca3de']
+After SubBytes (Round 7): ['0xc3bb57b2', '0xfba4c3d9', '0x1923a933', '0x1d0a71be']
+Original state in bytes:
+Row 0: c3bb57b2
+Row 1: fba4c3d9
+Row 2: 1923a933
+Row 3: 1d0a71be
+Shifted state (after shifts):
+Shifted Row 0: c3a4a9be
+Shifted Row 1: fb2371b2
+Shifted Row 2: 190a57d9
+Shifted Row 3: 1dbbc333
+After ShiftRows (Round 7): ['0xc3a4a9be', '0xfb2371b2', '0x190a57d9', '0x1dbbc333']
+After MixColumns (Round 7): ['0x7dcef734', '0x14b9df73b', '0xa22dcddf', '0x11c1d6e39']
+After AddRoundKey (Round 7): ['0x26002a15', '0x12aee28e9', '0x362aedf9', '0x117050759']
+After SubBytes (Round 8): ['0x59e563f7', '0x1e3428e5', '0x9955e505', '0xcbc56bf0']
+Original state in bytes:
+Row 0: 59e563f7
+Row 1: 1e3428e5
+Row 2: 9955e505
+Row 3: cbc56bf0
+Shifted state (after shifts):
+Shifted Row 0: 5934e5f0
+Shifted Row 1: 1e556bf7
+Shifted Row 2: 99c563e5
+Shifted Row 3: cbe52805
+After ShiftRows (Round 8): ['0x5934e5f0', '0x1e556bf7', '0x99c563e5', '0xcbe52805']
+After MixColumns (Round 8): ['0xfbf5b7c1', '0x5fff9fe9', '0xfb49aec7', '0x95677181']
+After AddRoundKey (Round 8): ['0x7010c799', '0xb5693063', '0x85d8216b', '0xe0ee974d']
+After SubBytes (Round 9): ['0xeec6ca51', '0xfb04f9d5', '0x7ffd6197', '0xe38828e1']
+Original state in bytes:
+Row 0: eec6ca51
+Row 1: fb04f9d5
+Row 2: 7ffd6197
+Row 3: e38828e1
+Shifted state (after shifts):
+Shifted Row 0: ee0461e1
+Shifted Row 1: fbfd2851
+Shifted Row 2: 7f88cad5
+Shifted Row 3: e3c6f997
+After ShiftRows (Round 9): ['0xee0461e1', '0xfbfd2851', '0x7f88cad5', '0xe3c6f997']
+After MixColumns (Round 9): ['0x14ba51095', '0x8933a561', '0x162e41d72', '0xe2f36e34']
+After AddRoundKey (Round 9): ['0x18bddc758', '0xa3dddd26', '0x1369bea99', '0xc3057f13']
+After SubBytes (Round 10): ['0x6ac6c13d', '0xf7c1c10a', '0xee871405', '0x7dd26b2e']
+Original state in bytes:
+Row 0: 6ac6c13d
+Row 1: f7c1c10a
+Row 2: ee871405
+Row 3: 7dd26b2e
+Shifted state (after shifts):
+Shifted Row 0: 6ac1142e
+Shifted Row 1: f7876b3d
+Shifted Row 2: eed2c10a
+Shifted Row 3: 7dc6c105
+After ShiftRows (Round 10): ['0x6ac1142e', '0xf7876b3d', '0xeed2c10a', '0x7dc6c105']
+After AddRoundKey (Round 10): ['0x66448157', '0xd1ec8603', '0x9cc6dbdf', '0x2e24caf7']
+Final Ciphertext: 5468652049726f6e205468726f6e652e10101010101010101010101010101010

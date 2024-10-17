@@ -205,14 +205,15 @@ class AES():
             print(f"Row {i}: {row.hex()}")
 
         shifted_state = []
-        shifted_state.append(state_bytes[0])
-        shifted_state.append(state_bytes[1][1:] + state_bytes[1][:1])
-        shifted_state.append(state_bytes[2][2:] + state_bytes[2][:2])
-        shifted_state.append(state_bytes[3][3:] + state_bytes[3][:3])
+        shifted_state.append(state_bytes[0][0:1] + state_bytes[1][1:2] + state_bytes[2][2:3] + state_bytes[3][3:4])
+        shifted_state.append(state_bytes[1][0:1] + state_bytes[2][1:2] + state_bytes[3][2:3] + state_bytes[0][3:4])
+        shifted_state.append(state_bytes[2][0:1] + state_bytes[3][1:2] + state_bytes[0][2:3] + state_bytes[1][3:4])
+        shifted_state.append(state_bytes[3][0:1] + state_bytes[0][1:2] + state_bytes[1][2:3] + state_bytes[2][3:4])
 
         print("Shifted state (after shifts):")
         for i, row in enumerate(shifted_state):
             print(f"Shifted Row {i}: {row.hex()}")
+
         return shifted_state
 
     def inv_shift_rows(self, state):
