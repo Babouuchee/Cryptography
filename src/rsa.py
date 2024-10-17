@@ -34,8 +34,8 @@ class RSA():
             if self.isHex(primeQ) is False or self.isHex(primeP) is False or len(primeP) % 2 != 0 or len(primeQ) % 2 != 0:
                 print("Prime numbers must be in hexadecimal")
                 exit(84)
-            self._primeQ = bytes.fromhex(primeP)
-            self._primeP = bytes.fromhex(primeQ)
+            self._primeP = int(''.join([primeP[i:i + 2] for i in range(0, len(primeP), 2)][::-1]), 16)
+            self._primeQ = int(''.join([primeQ[i:i + 2] for i in range(0, len(primeQ), 2)][::-1]), 16)
         else:
             if len(argv) < 4:
                 print("Key is missing")
@@ -54,7 +54,6 @@ class RSA():
         return True
 
     def run(self):
-        print(f"RSA  mode: '{self._mode}'  primes: '{self._primeQ},{self._primeP}'  key: '{self._key}'  message: '{self._message}'" if self._mode == "-g" else f"RSA  mode: '{self._mode}'  key: '{self._key}'  message: '{self._message}'")
         if self._mode == "-c":
             self.cipher()
         elif self._mode == "-d":
@@ -72,40 +71,25 @@ class RSA():
         print("Decipher")
 
     def generate(self):
-        print("Generate")
-        p = int.from_bytes(self._primeP)
-        q = int.from_bytes(self._primeQ)
+        p = self._primeP
+        q = self._primeQ
         n = p * q
-        lambdaN = self.leastCommonMultiple(p - 1, q - 1)
-        e = 65537
-        if self.greatestCommonMultiple(e, lambdaN) != 1:
-            raise Exception("e and lambda are not coprime")
-        d = self.mod_inverse(e, lambdaN)
+        lambdaN = math.lcm(p - 1, q - 1)
+        e = findBiggestFermatPrime(lambdaN)
+        d = pow(e, -1, lambdaN)
+        public_key = f"{e.to_bytes((e.bit_length() + 7) // 8, 'little').hex()}-{n.to_bytes((n.bit_length() + 7) // 8, 'little').hex()}"
+        private_key = f"{d.to_bytes((d.bit_length() + 7) // 8, 'little').hex()}-{n.to_bytes((n.bit_length() + 7) // 8, 'little').hex()}"
 
-        public_key = f"{hex(e)}-{hex(n)}"
-        private_key = f"{hex(d)}-{hex(n)}"
+        print(f"public key: {public_key}")
+        print(f"private key: {private_key}")
 
-        print(f"Public key : {public_key}")
-        print(f"Private key : {private_key}")
-
-    def leastCommonMultiple(self, a, b):
-        return abs(a * b) // self.greatestCommonMultiple(a, b)
-
-    def greatestCommonMultiple(self, a, b):
-        while b != 0:
-            a, b = b, a % b
-        return a
-
-    def mod_inverse(self, e, phi):
-        gcd_val, x, y = self.extended_gcd(e, phi)
-        if gcd_val != 1:
-            raise Exception("Modular inverse does not exist")
-        return x % phi
-
-    def extended_gcd(self, a, b):
-        if a == 0:
-            return b, 0, 1
-        gcd_val, x1, y1 = self.extended_gcd(b % a, a)
-        x = y1 - (b // a) * x1
-        y = x1
-        return gcd_val, x, y
+def findBiggestFermatPrime(maxValue):
+    result = 0
+    iteration = 0
+    while True:
+        fermat = 2 ** (2 ** iteration) + 1
+        if fermat > maxValue or fermat > 65537:
+            return result
+        if math.gcd(fermat, maxValue):
+            result = fermat
+        iteration += 1
