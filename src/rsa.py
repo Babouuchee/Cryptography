@@ -66,11 +66,9 @@ class RSA():
     def cipher(self):
         e = self._keyFirstPart
         n = self._keySecondPart
-        message_bytes = self._message.encode()
-        message_int = int.from_bytes(message_bytes, 'little')
-        encryptedMessage = pow(message_int, e, n)
-        encryptedBytes = encryptedMessage.to_bytes((encryptedMessage.bit_length() + 7) // 8, 'little')
-        print(f"{encryptedBytes.hex()}")
+        messageInt = int.from_bytes(self._message.encode(), 'little')
+        encryptedMessage = pow(messageInt, e, n)
+        print(f"{littleEndianToHex(encryptedMessage)}")
 
     def decipher(self):
         d = self._keyFirstPart
@@ -78,8 +76,7 @@ class RSA():
         encryptedBytes = bytes.fromhex(self._message)
         encryptedInt = int.from_bytes(encryptedBytes, 'little')
         decryptedInt = pow(encryptedInt, d, n)
-        decryptedBytes = decryptedInt.to_bytes((decryptedInt.bit_length() + 7) // 8, 'little')
-        print(f"{decryptedBytes.decode()}")
+        print(f"{hexToText(decryptedInt)}")
 
     def generate(self):
         p = self._primeP
@@ -88,11 +85,11 @@ class RSA():
         lambdaN = math.lcm(p - 1, q - 1)
         e = findBiggestFermatPrime(lambdaN)
         d = pow(e, -1, lambdaN)
-        public_key = f"{e.to_bytes((e.bit_length() + 7) // 8, 'little').hex()}-{n.to_bytes((n.bit_length() + 7) // 8, 'little').hex()}"
-        private_key = f"{d.to_bytes((d.bit_length() + 7) // 8, 'little').hex()}-{n.to_bytes((n.bit_length() + 7) // 8, 'little').hex()}"
+        publicKey = f"{littleEndianToHex(e)}-{littleEndianToHex(n)}"
+        privateKey = f"{littleEndianToHex(d)}-{littleEndianToHex(n)}"
 
-        print(f"public key: {public_key}")
-        print(f"private key: {private_key}")
+        print(f"public key: {publicKey}")
+        print(f"private key: {privateKey}")
 
 def findBiggestFermatPrime(maxValue):
     result = 0
@@ -117,3 +114,9 @@ def isPrime(value):
         if value % i == 0:
             return False
     return True
+
+def littleEndianToHex(number):
+    return number.to_bytes((number.bit_length() + 7) // 8, 'little').hex()
+
+def hexToText(number):
+    return number.to_bytes((number.bit_length() + 7) // 8, 'little').decode()
