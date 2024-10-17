@@ -37,9 +37,6 @@ class RSA():
                 exit(84)
             self._primeP = int.from_bytes(bytes.fromhex(primeP), 'little')
             self._primeQ = int.from_bytes(bytes.fromhex(primeQ), 'little')
-            # if isPrime(self._primeP) is False or isPrime(self._primeQ) is False:
-            #     print("Prime numbers given aren't prime")
-            #     exit(84)
         else:
             if len(argv) < 4:
                 print("Key is missing")
