@@ -119,25 +119,23 @@ class AES():
     def bytes_to_words(self, data):
         words = []
         for i in range(0, len(data), 4):
-            word = int.from_bytes(data[i:i + 4], byteorder='little')
+            word = int.from_bytes(data[i:i + 4])
             words.append(word)
         return words
 
     def words_to_bytes(self, words):
         byte_array = []
         for word in words:
-            if not (0 <= word < 2**32):
-                raise ValueError(f"Word {word} is out of range for bytes conversion")
-            byte_array.append(word.to_bytes(4, byteorder='little'))
+            byte_array.append(word.to_bytes(4))
         return b''.join(byte_array)
 
     def key_expansion(self, word, round_number):
         if isinstance(word, int):
-            word = [(word >> (i * 8)) & 0xFF for i in range(4)]
-            #print(f"Converted word to bytes: {word}")
+            word = [(word >> (i * 8)) & 0xFF for i in reversed(range(4))]
+            #print(f"Converted word to bytes: {[hex(byte) for byte in word]}")
 
         rotated_word = word[1:] + word[:1]
-        #print(f"Rotated word: {rotated_word}")
+        #print(f"Rotated word: {[hex(byte) for byte in rotated_word]}")
 
         substituted_word = []
         for b in rotated_word:
@@ -151,7 +149,8 @@ class AES():
 
         result = 0
         for i in range(4):
-            result |= substituted_word[i] << (i * 8)
+            result |= substituted_word[i] << ((3 - i) * 8)
+            #print(f"Step {i+1}: result = {hex(result)} (after adding byte {hex(substituted_word[i])})")
         return result
 
 
@@ -163,16 +162,16 @@ class AES():
 
         for i in range(0, self._rounds):
             temp = self.key_expansion(round_keys[-1][-1], i)
-            #print("Temp after key expansion is : ", temp.to_bytes(4, byteorder='little').hex())
+            #print("Temp after key expansion is : ", temp.to_bytes(4).hex())
 
             new_key_block = []
             new_key_block.append(round_keys[-1][0] ^ temp)
             xor_result = round_keys[-1][0] ^ temp
-            #print("First octet : ", xor_result.to_bytes(4, byteorder='little').hex())
+            #print("First octet : ", xor_result.to_bytes(4).hex())
             for k in range(1, 4):
                 result = new_key_block[k - 1] ^ round_keys[-1][k]
                 new_key_block.append(new_key_block[k - 1] ^ round_keys[-1][k])
-                #print(f"Octet {k}: {result.to_bytes(4, byteorder='little').hex()}")
+                #print(f"Octet {k}: {result.to_bytes(4).hex()}")
             #print(f"Round {i}: {self.words_to_bytes(new_key_block).hex()}")
             #print("\n")
             round_keys.append(new_key_block)
@@ -199,10 +198,7 @@ class AES():
         ]
 
     def shift_rows(self, state):
-        state_bytes = [word.to_bytes(4) for word in state]
-        print("Original state in bytes:")
-        for i, row in enumerate(state_bytes):
-            print(f"Row {i}: {row.hex()}")
+        state_bytes = [word.to_bytes(4, byteorder='little') for word in state]
 
         shifted_state = []
         shifted_state.append(state_bytes[0][0:1] + state_bytes[1][1:2] + state_bytes[2][2:3] + state_bytes[3][3:4])
@@ -210,11 +206,10 @@ class AES():
         shifted_state.append(state_bytes[2][0:1] + state_bytes[3][1:2] + state_bytes[0][2:3] + state_bytes[1][3:4])
         shifted_state.append(state_bytes[3][0:1] + state_bytes[0][1:2] + state_bytes[1][2:3] + state_bytes[2][3:4])
 
-        print("Shifted state (after shifts):")
-        for i, row in enumerate(shifted_state):
-            print(f"Shifted Row {i}: {row.hex()}")
-
-        return shifted_state
+        result = []
+        for i in range(len(shifted_state)):
+            result.append(int.from_bytes(shifted_state[i]))
+        return result
 
     def inv_shift_rows(self, state):
         return [
@@ -227,20 +222,30 @@ class AES():
     def mix_columns(self, state):
         mixed = []
         for col in range(4):
-            s0 = (state[col] >> 24) & 0xFF
-            s1 = (state[col] >> 16) & 0xFF
-            s2 = (state[col] >> 8) & 0xFF
-            s3 = state[col] & 0xFF
+            bytes_col = state[col].to_bytes(4)
+            s0, s1, s2, s3 = bytes_col
+            #print(f"Column {col}: s0 = {hex(s0)}, s1 = {hex(s1)}, s2 = {hex(s2)}, s3 = {hex(s3)}")
 
-            mixed_col = (
-                (self.gmul(s0, 2) ^ self.gmul(s1, 3) ^ s2 ^ s3) << 24 |
-                (s0 ^ self.gmul(s1, 2) ^ self.gmul(s2, 3) ^ s3) << 16 |
-                (s0 ^ s1 ^ self.gmul(s2, 2) ^ self.gmul(s3, 3)) << 8 |
-                (self.gmul(s0, 3) ^ s1 ^ s2 ^ self.gmul(s3, 2))
-            )
-            mixed.append(mixed_col)
+            first_col = self.gmul(s0, 2) ^ self.gmul(s1, 3) ^ s2 ^ s3
+            second_col = s0 ^ self.gmul(s1, 2) ^ self.gmul(s2, 3) ^ s3
+            third_col = s0 ^ s1 ^ self.gmul(s2, 2) ^ self.gmul(s3, 3)
+            fourth_col = self.gmul(s0, 3) ^ s1 ^ s2 ^ self.gmul(s3, 2)
+            #print(f"Row 1 : {first_col.to_bytes(1).hex()}")
+            #print(f"Row 1 : {second_col.to_bytes(1).hex()}")
+            #print(f"Row 3 : {third_col.to_bytes(1).hex()}")
+            #print(f"Row 4 : {fourth_col.to_bytes(1).hex()}")
 
-        return mixed
+            mixed.append(first_col)
+            mixed.append(second_col)
+            mixed.append(third_col)
+            mixed.append(fourth_col)
+
+
+            result = []
+            for i in range(0, len(mixed), 4):
+                word = (mixed[i] << 24) | (mixed[i + 1] << 16) | (mixed[i + 2] << 8) | mixed[i + 3]
+                result.append(word)
+        return result
 
     def inv_mix_columns(self, state):
         for i in range(4):
@@ -257,16 +262,16 @@ class AES():
         return state
 
     def gmul(self, a, b):
-        p = 0
-        for _ in range(8):
+        result = 0
+        for i in range(8):
             if b & 1:
-                p ^= a
-            hi_bit_set = a & 0x80
+                result ^= a
+            temp = a & 0x80
             a <<= 1
-            if hi_bit_set:
-                a ^= 0x1B
+            if temp:
+                a ^= 0x1b
             b >>= 1
-        return p
+        return result & 0xFF
 
     def cipher(self):
         print("Cipher")
@@ -290,24 +295,22 @@ class AES():
         state = [state[i] ^ self._round_keys[0][i] for i in range(4)]
         print("After AddRoundKey (Round 0):", [hex(word) for word in state])
 
-        for round in range(1, self._rounds + 1):
+        for round in range(0, self._rounds):
             state = self.sub_bytes(state)
             print(f"After SubBytes (Round {round}):", [hex(byte) for byte in state])
 
             state = self.shift_rows(state)
-            for i in range(len(state)):
-                state[i] = int.from_bytes(state[i])
             print(f"After ShiftRows (Round {round}):", [hex(byte) for byte in state])
 
-            if round < self._rounds:
+            if round < (self._rounds - 1):
                 state = self.mix_columns(state)
                 print(f"After MixColumns (Round {round}):", [hex(byte) for byte in state])
 
-            state = [state[i] ^ self._round_keys[round][i] for i in range(4)]
-            print(f"After AddRoundKey (Round {round}):", [hex(byte) for byte in state])
+            state = [state[i] ^ self._round_keys[round + 1][i] for i in range(4)]
+            print(f"After AddRoundKey (Round {round} with round_key {round + 1}):", [hex(byte) for byte in state])
 
         #self._message = self.words_to_bytes(state)
-        print("Final Ciphertext:", self._message.hex())
+        #print("Final Ciphertext:", self._message.hex())
 
     def decipher(self):
         print("Decipher")
