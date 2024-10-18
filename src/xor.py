@@ -45,7 +45,6 @@ class XOR():
         return True
 
     def run(self):
-        # print(f"XOR  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")
         if self._mode == "-c":
             self.cipher()
         elif self._mode == "-d":
