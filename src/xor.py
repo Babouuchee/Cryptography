@@ -7,7 +7,7 @@ class XOR():
         self._mode = ""
         self._bOptionEnable = False
         self._key = ""
-        self._message = input("Enter message: ")
+        self._message = input()
 
         if len(argv) < 3:
             print("Missing arguments")
