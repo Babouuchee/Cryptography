@@ -7,7 +7,7 @@ class XOR():
         self._mode = ""
         self._bOptionEnable = False
         self._key = ""
-        self._message = input()
+        self._message = ""
 
         if len(argv) < 3:
             print("Missing arguments")
@@ -25,12 +25,24 @@ class XOR():
             if len(argv) < 5:
                 print("Key is missing")
                 exit(84)
-            self._key = argv[4]
+            key = argv[4]
         else:
             if len(argv) < 4:
                 print("Key is missing")
                 exit(84)
-            self._key = argv[3]
+            key = argv[3]
+        if self.isHex(key) is False or len(key) % 2 != 0:
+            print("Key must be in hexadecimal")
+            exit(84)
+        self._key = bytes.fromhex(key)
+        self._message = input()
+
+    def isHex(self, input):
+        hexValues = "0123456789abcdef"
+        for letter in input:
+            if letter not in hexValues:
+                return False
+        return True
 
     def run(self):
         # print(f"XOR  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")
@@ -43,13 +55,11 @@ class XOR():
             exit(84)
 
     def cipher(self):
-        key_bytes = bytes.fromhex(self._key)
         reversed_message = self._message[::-1]
-        xor = bytes([a ^ key_bytes[i % len(key_bytes)] for i, a in enumerate(reversed_message.encode())])
+        xor = bytes([a ^ self._key[i % len(self._key)] for i, a in enumerate(reversed_message.encode())])
         little_endian = "".join([f"{x:02x}" for x in xor])
         print(little_endian)
 
     def decipher(self):
-        key_bytes = bytes.fromhex(self._key)
-        xor_bytes = bytes([a ^ key_bytes[i % len(key_bytes)] for i, a in enumerate(bytes.fromhex(self._message))])
+        xor_bytes = bytes([a ^ self._key[i % len(self._key)] for i, a in enumerate(bytes.fromhex(self._message))])
         print(xor_bytes.decode()[::-1])
