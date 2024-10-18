@@ -92,7 +92,7 @@ class RSA():
         print(f"private key: {privateKey}")
 
 def findBiggestFermatPrime(maxValue):
-    result = 0
+    result = 3
     iteration = 0
     while True:
         fermat = 2 ** (2 ** iteration) + 1
