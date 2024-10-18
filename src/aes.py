@@ -83,7 +83,9 @@ class AES():
                 print("Key must be in hexadecimal")
                 exit(84)
             self._key = bytes.fromhex(key_arg)
-        self._message = input()
+            self._key = self._key[::-1]
+            self._message = input()
+            self._message = self._message[::-1]
 
     def isHex(self, input):
         hexValues = "0123456789abcdef"
@@ -91,7 +93,6 @@ class AES():
             if letter not in hexValues:
                 return False
         return True
-
 
     def run(self):
         #print(f"AES  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key.hex}'  message: '{self._message}'")
@@ -119,7 +120,7 @@ class AES():
     def bytes_to_words(self, data):
         words = []
         for i in range(0, len(data), 4):
-            word = int.from_bytes(data[i:i + 4])
+            word = int.from_bytes(data[i:i + 4], 'little')
             words.append(word)
         return words
 
@@ -208,7 +209,7 @@ class AES():
 
         result = []
         for i in range(len(shifted_state)):
-            result.append(int.from_bytes(shifted_state[i]))
+            result.append(int.from_bytes(shifted_state[i], 'little'))
         return result
 
     def inv_shift_rows(self, state):
@@ -274,74 +275,45 @@ class AES():
         return result & 0xFF
 
     def cipher(self):
-        print("Cipher")
-        print("Key : ", self._key.hex())
-        print("Message : ", self._message)
+        #print("Cipher")
+        #print("Key : ", self._key.hex())
+        #print("Message : ", self._message)
 
         self.validate_key()
         self.validate_message()
         self.generate_round_key()
-        print("Round Keys:")
-        for i, round_key in enumerate(self._round_keys):
-            round_key_bytes = b''.join(word.to_bytes(4) for word in round_key)
-            print(f"Round {i}: {round_key_bytes.hex()}")
+        #print("Round Keys:")
+        #for i, round_key in enumerate(self._round_keys):
+        #    round_key_bytes = b''.join(word.to_bytes(4) for word in round_key)
+        #    print(f"Round {i}: {round_key_bytes.hex()}")
 
-        print("Message : ", self._message)
+        #print("Message : ", self._message)
 
         state = self.bytes_to_words(self._message)
 
-        print("Initial State:", [hex(word) for word in state])
+        #print("Initial State:", [hex(word) for word in state])
 
         state = [state[i] ^ self._round_keys[0][i] for i in range(4)]
-        print("After AddRoundKey (Round 0):", [hex(word) for word in state])
+        #print("After AddRoundKey (Round 0):", [hex(word) for word in state])
 
         for round in range(0, self._rounds):
             state = self.sub_bytes(state)
-            print(f"After SubBytes (Round {round}):", [hex(byte) for byte in state])
+            #print(f"After SubBytes (Round {round}):", [hex(byte) for byte in state])
 
             state = self.shift_rows(state)
-            print(f"After ShiftRows (Round {round}):", [hex(byte) for byte in state])
+            #print(f"After ShiftRows (Round {round}):", [hex(byte) for byte in state])
 
             if round < (self._rounds - 1):
                 state = self.mix_columns(state)
-                print(f"After MixColumns (Round {round}):", [hex(byte) for byte in state])
+                #print(f"After MixColumns (Round {round}):", [hex(byte) for byte in state])
 
             state = [state[i] ^ self._round_keys[round + 1][i] for i in range(4)]
-            print(f"After AddRoundKey (Round {round} with round_key {round + 1}):", [hex(byte) for byte in state])
+            #print(f"After AddRoundKey (Round {round} with round_key {round + 1}):", [hex(byte) for byte in state])
 
-        #self._message = self.words_to_bytes(state)
-        #print("Final Ciphertext:", self._message.hex())
+        result = ''.join(f'{num:02x}' for num in state)
+        print(result)
 
     def decipher(self):
         print("Decipher")
         print("Key : ", self._key.hex())
         print("Message : ", self._message)
-
-        self.validate_key()
-        self.validate_message()
-        if self._round_keys is None:
-            self.generate_round_key()
-
-        state = self.bytes_to_words(self._message)
-
-        print("Initial State:", [hex(word) for word in state])
-
-        for round in range(self._rounds - 1, -1, -1):
-            state = [state[i] ^ self._round_keys[round + 1][i] for i in range(4)]
-            print(f"After InvAddRoundKey (Round {round + 1}):", [hex(byte) for byte in state])
-
-            if round > 0:
-                state = self.inv_mix_columns(state)
-                print(f"After InvMixColumns (Round {round + 1}):", [hex(byte) for byte in state])
-
-            state = self.inv_shift_rows(state)
-            print(f"After InvShiftRows (Round {round + 1}):", [hex(byte) for byte in state])
-
-            state = self.inv_sub_bytes(state)
-            print(f"After InvSubBytes (Round {round + 1}):", [hex(byte) for byte in state])
-
-        state = [state[i] ^ self._round_keys[0][i] for i in range(4)]
-        print("After InvAddRoundKey (Round 0):", [hex(word) for word in state])
-
-        self._message = self.words_to_bytes(state)
-        print("Final Deciphered Message:", self._message.hex())
