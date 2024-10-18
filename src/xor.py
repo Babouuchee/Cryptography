@@ -35,7 +35,7 @@ class XOR():
             print("Key must be in hexadecimal")
             exit(84)
         self._key = bytes.fromhex(key)
-        self._message = input("Enter message: ")
+        self._message = input()
 
     def isHex(self, input):
         hexValues = "0123456789abcdef"
@@ -45,7 +45,7 @@ class XOR():
         return True
 
     def run(self):
-        print(f"XOR  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")
+        # print(f"XOR  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")
         if self._mode == "-c":
             self.cipher()
         elif self._mode == "-d":
@@ -55,7 +55,11 @@ class XOR():
             exit(84)
 
     def cipher(self):
-        print("Cipher")
+        reversed_message = self._message[::-1]
+        xor = bytes([a ^ self._key[i % len(self._key)] for i, a in enumerate(reversed_message.encode())])
+        little_endian = "".join([f"{x:02x}" for x in xor])
+        print(little_endian)
 
     def decipher(self):
-        print("Decipher")
+        xor_bytes = bytes([a ^ self._key[i % len(self._key)] for i, a in enumerate(bytes.fromhex(self._message))])
+        print(xor_bytes.decode()[::-1])
