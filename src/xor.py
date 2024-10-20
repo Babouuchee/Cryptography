@@ -46,9 +46,9 @@ class XOR():
 
     def run(self):
         if self._mode == "-c":
-            self.cipher()
+            print(f"{self.cipher()}")
         elif self._mode == "-d":
-            self.decipher()
+            print(f"{self.decipher()}")
         else:
             print("Invalid mode")
             exit(84)
@@ -57,8 +57,8 @@ class XOR():
         reversed_message = self._message[::-1]
         xor = bytes([a ^ self._key[i % len(self._key)] for i, a in enumerate(reversed_message.encode())])
         little_endian = "".join([f"{x:02x}" for x in xor])
-        print(little_endian)
+        return little_endian
 
     def decipher(self):
         xor_bytes = bytes([a ^ self._key[i % len(self._key)] for i, a in enumerate(bytes.fromhex(self._message))])
-        print(xor_bytes.decode()[::-1])
+        return xor_bytes.decode()[::-1]
