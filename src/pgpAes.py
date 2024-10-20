@@ -1,41 +1,13 @@
 #!/usr/bin/python3
 
-from sys import argv
+from parser import Parser
+
+from aes import AES
+from rsa import RSA
 
 class PGP_AES():
-    def __init__(self):
-        self._mode = ""
-        self._bOptionEnable = False
-        self._key = ""
-        self._message = ""
-
-        if len(argv) < 3:
-            print("Missing arguments")
-            exit(84)
-        if len(argv) > 5:
-            print("Too many arguments")
-            exit(84)
-        self._mode = argv[2]
-        if "-c" not in self._mode and "-d" not in self._mode:
-            print("Invalid mode")
-            exit(84)
-        if len(argv) > 3 and argv[3] == "-b":
-            self._bOptionEnable = True
-        if self._bOptionEnable is True:
-            if len(argv) < 5:
-                print("Key is missing")
-                exit(84)
-            key = argv[4]
-        else:
-            if len(argv) < 4:
-                print("Key is missing")
-                exit(84)
-            key = argv[3]
-        if self.isHex(self._key) is False or len(key) % 2 != 0:
-            print("Key must be in hexadecimal")
-            exit(84)
-        self._key = bytes.fromhex(key)
-        self._message = input("Enter message: ")
+    def __init__(self, parser):
+        self._parser : Parser = parser
 
     def isHex(self, input):
         hexValues = "0123456789abcdef"
@@ -45,17 +17,27 @@ class PGP_AES():
         return True
 
     def run(self):
-        print(f"PGP-AES  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key}'  message: '{self._message}'")
-        if self._mode == "-c":
-            self.cipher()
-        elif self._mode == "-d":
-            self.decipher()
+        if self._parser.getMode() == "-c":
+            result = self.cipher(bytes.fromhex(self._parser.getPGPKey()), self._parser.getRSAKeys()[0], self._parser.getRSAKeys()[1], self._parser.getMessage())
+            print(f"{result[0]}")
+            print(f"{result[1]}")
+        elif self._parser.getMode() == "-d":
+            result = self.decipher(self._parser.getPGPKey(), self._parser.getRSAKeys()[0], self._parser.getRSAKeys()[1], self._parser.getMessage())
+            print(f"{result}")
         else:
             print("Invalid mode")
             exit(84)
 
-    def cipher(self):
-        print("Cipher")
+    def cipher(self, symKey, rsaKeyFirstPart, rsaKeySecondPart, message):
+        aesHandler = AES(self._parser)
+        rsaHandler = RSA(self._parser)
+        cipheredKey = rsaHandler.cipher(symKey.decode('ascii'), rsaKeyFirstPart, rsaKeySecondPart)
+        cipheredMessage = aesHandler.cipher(symKey, message)
+        return [cipheredKey, cipheredMessage]
 
-    def decipher(self):
-        print("Decipher")
+    def decipher(self, symKey, rsaKeyFirstPart, rsaKeySecondPart, message):
+        aesHandler = AES(self._parser)
+        rsaHandler = RSA(self._parser)
+        decipheredKey = rsaHandler.decipher(symKey, rsaKeyFirstPart, rsaKeySecondPart)
+        decipheredMessage = aesHandler.decipher(decipheredKey.encode('ascii'), message)
+        return decipheredMessage

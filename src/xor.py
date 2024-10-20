@@ -1,64 +1,26 @@
 #!/usr/bin/python3
 
-from sys import argv
+from parser import Parser
 
 class XOR():
-    def __init__(self):
-        self._mode = ""
-        self._bOptionEnable = False
-        self._key = ""
-        self._message = ""
-
-        if len(argv) < 3:
-            print("Missing arguments")
-            exit(84)
-        if len(argv) > 5:
-            print("Too many arguments")
-            exit(84)
-        self._mode = argv[2]
-        if "-c" not in self._mode and "-d" not in self._mode:
-            print("Invalid mode")
-            exit(84)
-        if len(argv) > 3 and argv[3] == "-b":
-            self._bOptionEnable = True
-        if self._bOptionEnable is True:
-            if len(argv) < 5:
-                print("Key is missing")
-                exit(84)
-            key = argv[4]
-        else:
-            if len(argv) < 4:
-                print("Key is missing")
-                exit(84)
-            key = argv[3]
-        if self.isHex(key) is False or len(key) % 2 != 0:
-            print("Key must be in hexadecimal")
-            exit(84)
-        self._key = bytes.fromhex(key)
-        self._message = input()
-
-    def isHex(self, input):
-        hexValues = "0123456789abcdef"
-        for letter in input:
-            if letter not in hexValues:
-                return False
-        return True
+    def __init__(self, parser):
+        self._parser : Parser = parser
 
     def run(self):
-        if self._mode == "-c":
-            self.cipher()
-        elif self._mode == "-d":
-            self.decipher()
+        if self._parser.getMode() == "-c":
+            print(f"{self.cipher(bytes.fromhex(self._parser.getBasicKey()), self._parser.getMessage())}")
+        elif self._parser.getMode() == "-d":
+            print(f"{self.decipher(bytes.fromhex(self._parser.getBasicKey()), self._parser.getMessage())}")
         else:
             print("Invalid mode")
             exit(84)
 
-    def cipher(self):
-        reversed_message = self._message[::-1]
-        xor = bytes([a ^ self._key[i % len(self._key)] for i, a in enumerate(reversed_message.encode())])
+    def cipher(self, key, message):
+        reversed_message = message[::-1]
+        xor = bytes([a ^ key[i % len(key)] for i, a in enumerate(reversed_message.encode())])
         little_endian = "".join([f"{x:02x}" for x in xor])
-        print(little_endian)
+        return little_endian
 
-    def decipher(self):
-        xor_bytes = bytes([a ^ self._key[i % len(self._key)] for i, a in enumerate(bytes.fromhex(self._message))])
-        print(xor_bytes.decode()[::-1])
+    def decipher(self, key, message):
+        xor_bytes = bytes([a ^ key[i % len(key)] for i, a in enumerate(bytes.fromhex(message))])
+        return xor_bytes.decode()[::-1]

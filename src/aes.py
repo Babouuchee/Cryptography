@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from sys import argv
+from parser import Parser
 
 class AES():
     sbox = [
@@ -45,59 +45,14 @@ class AES():
         0x6C, 0xD8, 0xAB, 0x4D, 0x9A,
         0x2F, 0x5E
     ]
-    def __init__(self):
-        self._mode = ""
-        self._bOptionEnable = False
-        self._key = None
-        self._round_keys = None
-        self._rounds = 10
-        self._message = ""
-
-        if len(argv) < 3:
-            print("Missing arguments")
-            exit(84)
-        if len(argv) > 5:
-            print("Too many arguments")
-            exit(84)
-        self._mode = argv[2]
-        if "-c" not in self._mode and "-d" not in self._mode:
-            print("Invalid mode")
-            exit(84)
-        if len(argv) > 3 and argv[3] == "-b":
-            self._bOptionEnable = True
-        if self._bOptionEnable is True:
-            if len(argv) < 5:
-                print("Key is missing")
-                exit(84)
-            key_arg = argv[4]
-            if self.isHex(key_arg) is False:
-                print("Key must be in hexadecimal")
-                exit(84)
-            self._key = bytes.fromhex(key_arg)
-            self._message = input()
-        else:
-            if len(argv) < 4:
-                print("Key is missing")
-                exit(84)
-            key_arg = argv[3]
-            if self.isHex(key_arg) is False:
-                print("Key must be in hexadecimal")
-                exit(84)
-            self._key = bytes.fromhex(key_arg)
-            self._message = input()
-
-    def isHex(self, input):
-        hexValues = "0123456789abcdef"
-        for letter in input:
-            if letter not in hexValues:
-                return False
-        return True
+    def __init__(self, parser):
+        self._parser : Parser = parser
 
     def run(self):
-        if self._mode == "-c":
-            self.cipher()
-        elif self._mode == "-d":
-            self.decipher()
+        if self._parser.getMode() == "-c":
+            print(f"{self.cipher(bytes.fromhex(self._parser.getBasicKey()), self._parser.getMessage())}")
+        elif self._parser.getMode() == "-d":
+            print(f"{self.decipher(bytes.fromhex(self._parser.getBasicKey()), self._parser.getMessage())}")
         else:
             print("Invalid mode")
             exit(84)
@@ -109,61 +64,62 @@ class AES():
             little_endian_bytes.extend(chunk[::-1])
         return little_endian_bytes
 
-    def validate_key(self):
-        if len(self._key) != 16:
-            raise ValueError("Invalid key length. AES-128 requires a 16-byte key.")
-        self._key = self.convertLittleEndian(self._key)
+    def validate_key(self, key):
+        if len(key) != 16:
+            print("Invalid key length. AES-128 requires a 16-byte key.")
+            exit(84)
+        return self.convertLittleEndian(key)
 
-    def validate_message(self):
+    def validate_message(self, message):
         block_size = 16
-        if isinstance(self._message, str) and self._mode == "-c":
-            self._message = self._message.encode('utf-8')
-        if isinstance(self._message, str) and self._mode == "-d":
-            self._message = bytes.fromhex(self._message)
-            self._message = self.convertLittleEndian(self._message)
-        if len(self._message) < block_size:
-            padding_length = block_size - (len(self._message) % block_size)
+        if isinstance(message, str) and self._parser.getMode() == "-c":
+            message = message.encode('utf-8')
+        if isinstance(message, str) and self._parser.getMode() == "-d":
+            message = bytes.fromhex(message)
+            message = self.convertLittleEndian(message)
+        if len(message) < block_size:
+            padding_length = block_size - (len(message) % block_size)
             padding = bytes([padding_length] * padding_length)
-            self._message += padding
+            message += padding
+        return message
 
-    def cipher(self):
-        self.validate_key()
-        self.validate_message()
-        self.generate_round_key()
+    def cipher(self, key, message):
+        key = self.validate_key(key)
+        message = self.validate_message(message)
+        roundKeys = self.generate_round_key(key)
 
-        state = self.add_round_key(self._message, self._key)
+        state = self.add_round_key(message, key)
 
         for round in range(9):
             state = self.sub_bytes(state)
             state = self.shift_rows(state)
             state = self.mix_columns(state)
-            state = self.add_round_key(state, self._round_keys[round + 1])
+            state = self.add_round_key(state, roundKeys[round + 1])
 
         state = self.sub_bytes(state)
         state = self.shift_rows(state)
-        state = self.add_round_key(state, self._round_keys[10])
+        state = self.add_round_key(state, roundKeys[10])
         result = self.convertLittleEndian(state)
-        print(f"{result.hex()}")
+        return result.hex()
 
-    def decipher(self):
-        self.validate_key()
-        self.validate_message()
-        self.generate_round_key()
+    def decipher(self, key, message):
+        key = self.validate_key(key)
+        message = self.validate_message(message)
+        roundKeys = self.generate_round_key(key)
 
-        state = self.add_round_key(self._message, self._round_keys[10])
+        state = self.add_round_key(message, roundKeys[10])
 
         for round in range(9, 0, -1):
             state = self.inv_shift_rows(state)
             state = self.inv_sub_bytes(state)
-            state = self.add_round_key(state, self._round_keys[round])
+            state = self.add_round_key(state, roundKeys[round])
             state = self.inv_mix_columns(state)
         state = self.inv_shift_rows(state)
         state = self.inv_sub_bytes(state)
-        state = self.add_round_key(state, self._round_keys[0])
-        print(f"{state.decode('ascii')}")
+        state = self.add_round_key(state, roundKeys[0])
+        return state.decode('ascii')
 
-    def generate_round_key(self):
-        key = self._key
+    def generate_round_key(self, key):
         expanded_key = list(key)
         key_size = 16
         expanded_size = 176
@@ -180,7 +136,7 @@ class AES():
             if len(expanded_key) % 16 == 0:
                 expanded_keys.append(bytes(expanded_key[-16:]))
             i += 4
-        self._round_keys = expanded_keys
+        return expanded_keys
 
     def sub_bytes(self, state):
         result = bytearray(len(state))
