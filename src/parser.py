@@ -47,7 +47,7 @@ class Parser():
     def setPrimes(self, system):
         if system == "rsa":
             if self._mode == "-g":
-                return [int.from_bytes(bytes.fromhex(argv[3])), int.from_bytes(bytes.fromhex(argv[4]))]
+                return [int.from_bytes(bytes.fromhex(argv[3]), 'little'), int.from_bytes(bytes.fromhex(argv[4]), 'little')]
             else:
                 return [-1, -1]
         else:
