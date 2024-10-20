@@ -54,11 +54,13 @@ class RSA():
 
     def run(self):
         if self._mode == "-c":
-            self.cipher()
+            print(f"{self.cipher()}")
         elif self._mode == "-d":
-            self.decipher()
+            print(f"{self.decipher()}")
         elif self._mode == "-g":
-            self.generate()
+            public_key, private_key = self.generate()
+            print(f"public key: {public_key}")
+            print(f"private key: {private_key}")
         else:
             print("Invalid mode")
             exit(84)
@@ -68,7 +70,7 @@ class RSA():
         n = self._keySecondPart
         messageInt = int.from_bytes(self._message.encode(), 'little')
         encryptedMessage = pow(messageInt, e, n)
-        print(f"{littleEndianToHex(encryptedMessage)}")
+        return littleEndianToHex(encryptedMessage)
 
     def decipher(self):
         d = self._keyFirstPart
@@ -76,7 +78,7 @@ class RSA():
         encryptedBytes = bytes.fromhex(self._message)
         encryptedInt = int.from_bytes(encryptedBytes, 'little')
         decryptedInt = pow(encryptedInt, d, n)
-        print(f"{hexToText(decryptedInt)}")
+        return hexToText(decryptedInt)
 
     def generate(self):
         p = self._primeP
@@ -88,8 +90,7 @@ class RSA():
         publicKey = f"{littleEndianToHex(e)}-{littleEndianToHex(n)}"
         privateKey = f"{littleEndianToHex(d)}-{littleEndianToHex(n)}"
 
-        print(f"public key: {publicKey}")
-        print(f"private key: {privateKey}")
+        return [publicKey, privateKey]
 
 def findBiggestFermatPrime(maxValue):
     result = 3
