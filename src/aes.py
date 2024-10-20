@@ -95,9 +95,9 @@ class AES():
 
     def run(self):
         if self._mode == "-c":
-            self.cipher()
+            print(f"{self.cipher()}")
         elif self._mode == "-d":
-            self.decipher()
+            print(f"{self.decipher()}")
         else:
             print("Invalid mode")
             exit(84)
@@ -144,7 +144,7 @@ class AES():
         state = self.shift_rows(state)
         state = self.add_round_key(state, self._round_keys[10])
         result = self.convertLittleEndian(state)
-        print(f"{result.hex()}")
+        return result.hex()
 
     def decipher(self):
         self.validate_key()
@@ -161,7 +161,7 @@ class AES():
         state = self.inv_shift_rows(state)
         state = self.inv_sub_bytes(state)
         state = self.add_round_key(state, self._round_keys[0])
-        print(f"{state.decode('ascii')}")
+        return state.decode('ascii')
 
     def generate_round_key(self):
         key = self._key
