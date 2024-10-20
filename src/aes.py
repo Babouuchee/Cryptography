@@ -111,7 +111,8 @@ class AES():
 
     def validate_key(self):
         if len(self._key) != 16:
-            raise ValueError("Invalid key length. AES-128 requires a 16-byte key.")
+            print("Invalid key length. AES-128 requires a 16-byte key.")
+            exit(84)
         self._key = self.convertLittleEndian(self._key)
 
     def validate_message(self):
