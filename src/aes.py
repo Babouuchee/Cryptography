@@ -4,22 +4,22 @@ from sys import argv
 
 class AES():
     sbox = [
-            0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01,   0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
-            0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
-            0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15,
-            0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2, 0xeb, 0x27, 0xb2, 0x75,
-            0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0, 0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84,
-            0x53, 0xd1, 0x00, 0xed, 0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf,
-            0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f, 0x50, 0x3c, 0x9f, 0xa8,
-            0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5, 0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2,
-            0xcd, 0x0c, 0x13, 0xec, 0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73,
-            0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14, 0xde, 0x5e, 0x0b, 0xdb,
-            0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c, 0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79,
-            0xe7, 0xc8, 0x37, 0x6d, 0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08,
-            0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a,
-            0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e,
-            0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
-            0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
+        0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
+        0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
+        0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15,
+        0x04, 0xc7, 0x23, 0xc3, 0x18, 0x96, 0x05, 0x9a, 0x07, 0x12, 0x80, 0xe2, 0xeb, 0x27, 0xb2, 0x75,
+        0x09, 0x83, 0x2c, 0x1a, 0x1b, 0x6e, 0x5a, 0xa0, 0x52, 0x3b, 0xd6, 0xb3, 0x29, 0xe3, 0x2f, 0x84,
+        0x53, 0xd1, 0x00, 0xed, 0x20, 0xfc, 0xb1, 0x5b, 0x6a, 0xcb, 0xbe, 0x39, 0x4a, 0x4c, 0x58, 0xcf,
+        0xd0, 0xef, 0xaa, 0xfb, 0x43, 0x4d, 0x33, 0x85, 0x45, 0xf9, 0x02, 0x7f, 0x50, 0x3c, 0x9f, 0xa8,
+        0x51, 0xa3, 0x40, 0x8f, 0x92, 0x9d, 0x38, 0xf5, 0xbc, 0xb6, 0xda, 0x21, 0x10, 0xff, 0xf3, 0xd2,
+        0xcd, 0x0c, 0x13, 0xec, 0x5f, 0x97, 0x44, 0x17, 0xc4, 0xa7, 0x7e, 0x3d, 0x64, 0x5d, 0x19, 0x73,
+        0x60, 0x81, 0x4f, 0xdc, 0x22, 0x2a, 0x90, 0x88, 0x46, 0xee, 0xb8, 0x14, 0xde, 0x5e, 0x0b, 0xdb,
+        0xe0, 0x32, 0x3a, 0x0a, 0x49, 0x06, 0x24, 0x5c, 0xc2, 0xd3, 0xac, 0x62, 0x91, 0x95, 0xe4, 0x79,
+        0xe7, 0xc8, 0x37, 0x6d, 0x8d, 0xd5, 0x4e, 0xa9, 0x6c, 0x56, 0xf4, 0xea, 0x65, 0x7a, 0xae, 0x08,
+        0xba, 0x78, 0x25, 0x2e, 0x1c, 0xa6, 0xb4, 0xc6, 0xe8, 0xdd, 0x74, 0x1f, 0x4b, 0xbd, 0x8b, 0x8a,
+        0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e,
+        0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf,
+        0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
     ]
     inv_sbox = [
         0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb,
@@ -74,6 +74,7 @@ class AES():
                 print("Key must be in hexadecimal")
                 exit(84)
             self._key = bytes.fromhex(key_arg)
+            self._message = input()
         else:
             if len(argv) < 4:
                 print("Key is missing")
@@ -83,9 +84,7 @@ class AES():
                 print("Key must be in hexadecimal")
                 exit(84)
             self._key = bytes.fromhex(key_arg)
-            self._key = self._key[::-1]
             self._message = input()
-            self._message = self._message[::-1]
 
     def isHex(self, input):
         hexValues = "0123456789abcdef"
@@ -95,7 +94,6 @@ class AES():
         return True
 
     def run(self):
-        #print(f"AES  mode: '{self._mode}'  bOption: '{self._bOptionEnable}'  key: '{self._key.hex}'  message: '{self._message}'")
         if self._mode == "-c":
             self.cipher()
         elif self._mode == "-d":
@@ -104,163 +102,119 @@ class AES():
             print("Invalid mode")
             exit(84)
 
+    def convertLittleEndian(self, data):
+        little_endian_bytes = bytearray()
+        for i in range(0, len(data), 4):
+            chunk = data[i: i+4]
+            little_endian_bytes.extend(chunk[::-1])
+        return little_endian_bytes
+
     def validate_key(self):
         if len(self._key) != 16:
             raise ValueError("Invalid key length. AES-128 requires a 16-byte key.")
+        self._key = self.convertLittleEndian(self._key)
 
     def validate_message(self):
         block_size = 16
-        if isinstance(self._message, str):
+        if isinstance(self._message, str) and self._mode == "-c":
             self._message = self._message.encode('utf-8')
+        if isinstance(self._message, str) and self._mode == "-d":
+            self._message = bytes.fromhex(self._message)
+            self._message = self.convertLittleEndian(self._message)
+        if len(self._message) < block_size:
+            padding_length = block_size - (len(self._message) % block_size)
+            padding = bytes([padding_length] * padding_length)
+            self._message += padding
 
-        padding_length = block_size - (len(self._message) % block_size)
-        padding = bytes([padding_length] * padding_length)
-        self._message += padding
+    def cipher(self):
+        self.validate_key()
+        self.validate_message()
+        self.generate_round_key()
 
-    def bytes_to_words(self, data):
-        words = []
-        for i in range(0, len(data), 4):
-            word = int.from_bytes(data[i:i + 4], 'little')
-            words.append(word)
-        return words
+        state = self.add_round_key(self._message, self._key)
 
-    def words_to_bytes(self, words):
-        byte_array = []
-        for word in words:
-            byte_array.append(word.to_bytes(4))
-        return b''.join(byte_array)
+        for round in range(9):
+            state = self.sub_bytes(state)
+            state = self.shift_rows(state)
+            state = self.mix_columns(state)
+            state = self.add_round_key(state, self._round_keys[round + 1])
 
-    def key_expansion(self, word, round_number):
-        if isinstance(word, int):
-            word = [(word >> (i * 8)) & 0xFF for i in reversed(range(4))]
-            #print(f"Converted word to bytes: {[hex(byte) for byte in word]}")
+        state = self.sub_bytes(state)
+        state = self.shift_rows(state)
+        state = self.add_round_key(state, self._round_keys[10])
+        result = self.convertLittleEndian(state)
+        print(f"{result.hex()}")
 
-        rotated_word = word[1:] + word[:1]
-        #print(f"Rotated word: {[hex(byte) for byte in rotated_word]}")
+    def decipher(self):
+        self.validate_key()
+        self.validate_message()
+        self.generate_round_key()
 
-        substituted_word = []
-        for b in rotated_word:
-            substituted_value = self.sbox[b]
-            substituted_word.append(substituted_value)
-            #print(f"Substituted {b:#04x} -> {substituted_value:#04x}")
+        state = self.add_round_key(self._message, self._round_keys[10])
 
-        #print(f"Before XOR with Rcon: {substituted_word}")
-        substituted_word[0] ^= self.rcon[round_number]
-        #print(f"After XOR with Rcon[{round_number}]: {substituted_word}")
-
-        result = 0
-        for i in range(4):
-            result |= substituted_word[i] << ((3 - i) * 8)
-            #print(f"Step {i+1}: result = {hex(result)} (after adding byte {hex(substituted_word[i])})")
-        return result
-
+        for round in range(9, 0, -1):
+            state = self.inv_shift_rows(state)
+            state = self.inv_sub_bytes(state)
+            state = self.add_round_key(state, self._round_keys[round])
+            state = self.inv_mix_columns(state)
+        state = self.inv_shift_rows(state)
+        state = self.inv_sub_bytes(state)
+        state = self.add_round_key(state, self._round_keys[0])
+        print(f"{state.decode('ascii')}")
 
     def generate_round_key(self):
-        self._key = self.bytes_to_words(self._key)
-        key_size = len(self._key) // 4
-        round_keys = []
-        round_keys.append(self._key)
-
-        for i in range(0, self._rounds):
-            temp = self.key_expansion(round_keys[-1][-1], i)
-            #print("Temp after key expansion is : ", temp.to_bytes(4).hex())
-
-            new_key_block = []
-            new_key_block.append(round_keys[-1][0] ^ temp)
-            xor_result = round_keys[-1][0] ^ temp
-            #print("First octet : ", xor_result.to_bytes(4).hex())
-            for k in range(1, 4):
-                result = new_key_block[k - 1] ^ round_keys[-1][k]
-                new_key_block.append(new_key_block[k - 1] ^ round_keys[-1][k])
-                #print(f"Octet {k}: {result.to_bytes(4).hex()}")
-            #print(f"Round {i}: {self.words_to_bytes(new_key_block).hex()}")
-            #print("\n")
-            round_keys.append(new_key_block)
-
-        self._round_keys = round_keys
+        key = self._key
+        expanded_key = list(key)
+        key_size = 16
+        expanded_size = 176
+        expanded_keys = [key]
+        i = key_size
+        while i < expanded_size:
+            temp = expanded_key[i-4:i]
+            if i % key_size == 0:
+                temp = temp[1:] + temp[:1]
+                temp = [self.sbox[b] for b in temp]
+                temp[0] ^= self.rcon[(i // key_size) - 1]
+            for j in range(4):
+                expanded_key.append(expanded_key[i - key_size + j] ^ temp[j])
+            if len(expanded_key) % 16 == 0:
+                expanded_keys.append(bytes(expanded_key[-16:]))
+            i += 4
+        self._round_keys = expanded_keys
 
     def sub_bytes(self, state):
-        substituted_state = []
-        for word in state:
-            for i in range(4):
-                byte = (word >> (i * 8)) & 0xFF
-                substituted_byte = self.sbox[byte]
-                substituted_state.append(substituted_byte)
-        grouped_state = []
-        for i in range(0, len(substituted_state), 4):
-            word = (substituted_state[i] << 24) | (substituted_state[i + 1] << 16) | (substituted_state[i + 2] << 8) | substituted_state[i + 3]
-            grouped_state.append(word)
-        return grouped_state
-
-    def inv_sub_bytes(self, state):
-        return [
-            sum((self.inv_sbox[(word >> (i * 8)) & 0xFF] << (i * 8)) for i in range(4))
-            for word in state
-        ]
+        result = bytearray(len(state))
+        for i in range(len(state)):
+            result[i] = self.sbox[state[i]]
+        return bytes(result)
 
     def shift_rows(self, state):
-        state_bytes = [word.to_bytes(4, byteorder='little') for word in state]
+        newState = bytearray(len(state))
 
-        shifted_state = []
-        shifted_state.append(state_bytes[0][0:1] + state_bytes[1][1:2] + state_bytes[2][2:3] + state_bytes[3][3:4])
-        shifted_state.append(state_bytes[1][0:1] + state_bytes[2][1:2] + state_bytes[3][2:3] + state_bytes[0][3:4])
-        shifted_state.append(state_bytes[2][0:1] + state_bytes[3][1:2] + state_bytes[0][2:3] + state_bytes[1][3:4])
-        shifted_state.append(state_bytes[3][0:1] + state_bytes[0][1:2] + state_bytes[1][2:3] + state_bytes[2][3:4])
-
-        result = []
-        for i in range(len(shifted_state)):
-            result.append(int.from_bytes(shifted_state[i], 'little'))
-        return result
-
-    def inv_shift_rows(self, state):
-        return [
-            state[0],
-            (state[1] >> 8) | (state[1] << 24),
-            (state[2] >> 16) | (state[2] << 16),
-            (state[3] >> 24) | (state[3] << 8),
-        ]
+        newState[0], newState[1], newState[2], newState[3] = state[0], state[5], state[10], state[15]
+        newState[4], newState[5], newState[6], newState[7] = state[4], state[9], state[14], state[3]
+        newState[8], newState[9], newState[10], newState[11] = state[8], state[13], state[2], state[7]
+        newState[12], newState[13], newState[14], newState[15] = state[12], state[1], state[6], state[11]
+        return bytes(newState)
 
     def mix_columns(self, state):
-        mixed = []
+        mixed_state = bytearray(len(state))
+
         for col in range(4):
-            bytes_col = state[col].to_bytes(4)
-            s0, s1, s2, s3 = bytes_col
-            #print(f"Column {col}: s0 = {hex(s0)}, s1 = {hex(s1)}, s2 = {hex(s2)}, s3 = {hex(s3)}")
+            s0, s1, s2, s3 = state[col * 4: col * 4 + 4]
 
-            first_col = self.gmul(s0, 2) ^ self.gmul(s1, 3) ^ s2 ^ s3
-            second_col = s0 ^ self.gmul(s1, 2) ^ self.gmul(s2, 3) ^ s3
-            third_col = s0 ^ s1 ^ self.gmul(s2, 2) ^ self.gmul(s3, 3)
-            fourth_col = self.gmul(s0, 3) ^ s1 ^ s2 ^ self.gmul(s3, 2)
-            #print(f"Row 1 : {first_col.to_bytes(1).hex()}")
-            #print(f"Row 1 : {second_col.to_bytes(1).hex()}")
-            #print(f"Row 3 : {third_col.to_bytes(1).hex()}")
-            #print(f"Row 4 : {fourth_col.to_bytes(1).hex()}")
+            mixed_state[0 + col * 4] = self.gmul(s0, 2) ^ self.gmul(s1, 3) ^ s2 ^ s3
+            mixed_state[1 + col * 4] = s0 ^ self.gmul(s1, 2) ^ self.gmul(s2, 3) ^ s3
+            mixed_state[2 + col * 4] = s0 ^ s1 ^ self.gmul(s2, 2) ^ self.gmul(s3, 3)
+            mixed_state[3 + col * 4] = self.gmul(s0, 3) ^ s1 ^ s2 ^ self.gmul(s3, 2)
 
-            mixed.append(first_col)
-            mixed.append(second_col)
-            mixed.append(third_col)
-            mixed.append(fourth_col)
+        return bytes(mixed_state)
 
-
-            result = []
-            for i in range(0, len(mixed), 4):
-                word = (mixed[i] << 24) | (mixed[i + 1] << 16) | (mixed[i + 2] << 8) | mixed[i + 3]
-                result.append(word)
-        return result
-
-    def inv_mix_columns(self, state):
-        for i in range(4):
-            s0 = (state[i] >> 24) & 0xFF
-            s1 = (state[i] >> 16) & 0xFF
-            s2 = (state[i] >> 8) & 0xFF
-            s3 = state[i] & 0xFF
-            new_s0 = self.gmul(s0, 0x0e) ^ self.gmul(s1, 0x0b) ^ self.gmul(s2, 0x0d) ^ self.gmul(s3, 0x09)
-            new_s1 = self.gmul(s0, 0x09) ^ self.gmul(s1, 0x0e) ^ self.gmul(s2, 0x0b) ^ self.gmul(s3, 0x0d)
-            new_s2 = self.gmul(s0, 0x0d) ^ self.gmul(s1, 0x09) ^ self.gmul(s2, 0x0e) ^ self.gmul(s3, 0x0b)
-            new_s3 = self.gmul(s0, 0x0b) ^ self.gmul(s1, 0x0d) ^ self.gmul(s2, 0x09) ^ self.gmul(s3, 0x0e)
-            state[i] = (new_s0 << 24) | (new_s1 << 16) | (new_s2 << 8) | new_s3
-
-        return state
+    def add_round_key(self, state, old_key):
+        newBlock = bytearray()
+        for i in range(len(state)):
+            newBlock.append(state[i] ^ old_key[i])
+        return bytes.fromhex(newBlock.hex())
 
     def gmul(self, a, b):
         result = 0
@@ -272,48 +226,32 @@ class AES():
             if temp:
                 a ^= 0x1b
             b >>= 1
-        return result & 0xFF
+        return result & 0xff
+    
+    def inv_sub_bytes(self, state):
+        result = bytearray(len(state))
+        for i in range(len(state)):
+            result[i] = self.inv_sbox[state[i]]
+        return bytes(result)
 
-    def cipher(self):
-        #print("Cipher")
-        #print("Key : ", self._key.hex())
-        #print("Message : ", self._message)
+    def inv_shift_rows(self, state):
+        newState = bytearray(len(state))
 
-        self.validate_key()
-        self.validate_message()
-        self.generate_round_key()
-        #print("Round Keys:")
-        #for i, round_key in enumerate(self._round_keys):
-        #    round_key_bytes = b''.join(word.to_bytes(4) for word in round_key)
-        #    print(f"Round {i}: {round_key_bytes.hex()}")
+        newState[0], newState[1], newState[2], newState[3] = state[0], state[13], state[10], state[7]
+        newState[4], newState[5], newState[6], newState[7] = state[4], state[1], state[14], state[11]
+        newState[8], newState[9], newState[10], newState[11] = state[8], state[5], state[2], state[15]
+        newState[12], newState[13], newState[14], newState[15] = state[12], state[9], state[6], state[3]
+        return bytes(newState)
 
-        #print("Message : ", self._message)
+    def inv_mix_columns(self, state):
+        mixed_state = bytearray(len(state))
 
-        state = self.bytes_to_words(self._message)
+        for col in range(4):
+            s0, s1, s2, s3 = state[col * 4: col * 4 + 4]
 
-        #print("Initial State:", [hex(word) for word in state])
+            mixed_state[0 + col * 4] = self.gmul(s0, 0x0e) ^ self.gmul(s1, 0x0b) ^ self.gmul(s2, 0x0d) ^ self.gmul(s3, 0x09)
+            mixed_state[1 + col * 4] = self.gmul(s0, 0x09) ^ self.gmul(s1, 0x0e) ^ self.gmul(s2, 0x0b) ^ self.gmul(s3, 0x0d)
+            mixed_state[2 + col * 4] = self.gmul(s0, 0x0d) ^ self.gmul(s1, 0x09) ^ self.gmul(s2, 0x0e) ^ self.gmul(s3, 0x0b)
+            mixed_state[3 + col * 4] = self.gmul(s0, 0x0b) ^ self.gmul(s1, 0x0d) ^ self.gmul(s2, 0x09) ^ self.gmul(s3, 0x0e)
 
-        state = [state[i] ^ self._round_keys[0][i] for i in range(4)]
-        #print("After AddRoundKey (Round 0):", [hex(word) for word in state])
-
-        for round in range(0, self._rounds):
-            state = self.sub_bytes(state)
-            #print(f"After SubBytes (Round {round}):", [hex(byte) for byte in state])
-
-            state = self.shift_rows(state)
-            #print(f"After ShiftRows (Round {round}):", [hex(byte) for byte in state])
-
-            if round < (self._rounds - 1):
-                state = self.mix_columns(state)
-                #print(f"After MixColumns (Round {round}):", [hex(byte) for byte in state])
-
-            state = [state[i] ^ self._round_keys[round + 1][i] for i in range(4)]
-            #print(f"After AddRoundKey (Round {round} with round_key {round + 1}):", [hex(byte) for byte in state])
-
-        result = ''.join(f'{num:02x}' for num in state)
-        print(result)
-
-    def decipher(self):
-        print("Decipher")
-        print("Key : ", self._key.hex())
-        print("Message : ", self._message)
+        return bytes(mixed_state)
