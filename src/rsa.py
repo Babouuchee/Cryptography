@@ -48,16 +48,13 @@ class RSA():
 
         return [publicKey, privateKey]
 
+FERMAT_PRIMES = [3, 5, 17, 257, 65537]
+
 def findBiggestFermatPrime(maxValue):
-    result = 3
-    iteration = 0
-    while True:
-        fermat = 2 ** (2 ** iteration) + 1
-        if fermat > maxValue or fermat > 65537:
-            return result
-        if math.gcd(fermat, maxValue):
-            result = fermat
-        iteration += 1
+    for prime in reversed(FERMAT_PRIMES):
+        if prime <= maxValue:
+            return prime
+    return 3
 
 def isPrime(value):
     for i in range(2, int(value ** 0.5) + 1):
